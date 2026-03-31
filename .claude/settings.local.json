@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(learn-moralis)",
+      "Skill(moralis-data-api)",
+      "Skill(moralis-streams-api)",
+      "Bash(pdftotext /Users/macesko/Desktop/lomake9.pdf -)",
+      "Bash(pdfinfo:*)",
+      "Bash(pdftk /Users/macesko/Desktop/lomake9.pdf dump_data_fields)",
+      "Bash(python3 -c \":*)",
+      "Bash(python3:*)",
+      "Bash(pip3 install:*)",
+      "Bash(npx create-next-app@14 moralis-tax-dapp-temp --typescript --tailwind --eslint --app --src-dir --no-import-alias --use-npm)",
+      "Bash(cp -r src public next.config.mjs tsconfig.json tailwind.config.ts postcss.config.mjs package.json package-lock.json next-env.d.ts /Users/macesko/Desktop/moralis-tax-dapp/)",
+      "Bash(rm -rf /Users/macesko/Desktop/moralis-tax-dapp-temp)",
+      "Bash(cp -r src next.config.mjs tsconfig.json tailwind.config.ts postcss.config.mjs package.json package-lock.json next-env.d.ts /Users/macesko/Desktop/moralis-tax-dapp/)",
+      "Bash(mkdir -p /Users/macesko/Desktop/moralis-tax-dapp/public)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn@latest init -d --style default --base-color slate)",
+      "Bash(npx shadcn@latest init -d)"
+    ]
+  }
+}

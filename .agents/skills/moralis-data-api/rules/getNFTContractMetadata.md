@@ -1,0 +1,85 @@
+# Get NFT collection metadata
+
+Fetch on-chain metadata like name, symbol, and base token URI for an NFT contract. Also returns off-chain metadata, floor prices and more where available.
+
+## Method
+
+GET
+
+## Base URL
+
+`https://deep-index.moralis.io/api/v2.2`
+
+## Path
+
+`/nft/:address/metadata`
+
+## Path Params
+
+| Name | Type | Required | Description | Example |
+|------|------|----------|-------------|----------|
+| address | string | Yes | The address of the NFT contract | \`YOUR_ADDRESS\` |
+
+## Query Params
+
+| Name | Type | Required | Description | Example |
+|------|------|----------|-------------|----------|
+| chain | string (eth, 0x1, sepolia, 0xaa36a7, polygon, 0x89, bsc, 0x38, bsc testnet, 0x61, avalanche, 0xa86a, fantom, 0xfa, cronos, 0x19, arbitrum, 0xa4b1, chiliz, 0x15b38, chiliz testnet, 0x15b32, gnosis, 0x64, gnosis testnet, 0x27d8, base, 0x2105, base sepolia, 0x14a34, optimism, 0xa, polygon amoy, 0x13882, linea, 0xe708, moonbeam, 0x504, moonriver, 0x505, moonbase, 0x507, linea sepolia, 0xe705, flow, 0x2eb, flow-testnet, 0x221, ronin, 0x7e4, ronin-testnet, 0x31769, lisk, 0x46f, lisk-sepolia, 0x106a, pulse, 0x171, sei-testnet, 0x530, sei, 0x531, monad, 0x8f) | No | The chain to query | \`eth\` |
+| include_prices | boolean | No | Should NFT last sale prices be included in the result? | - |
+
+## Response Example
+
+Status: 200
+
+Returns the metadata for an NFT collection.
+
+```json
+{
+  "token_address": "YOUR_TOKEN_ADDRESS",
+  "name": "KryptoKitties",
+  "synced_at": "synced_at_example",
+  "symbol": "RARI",
+  "contract_type": "ERC721",
+  "possible_spam": "false",
+  "verified_collection": "false",
+  "collection_logo": "https://example.com/RESOURCE_URL",
+  "collection_banner_image": "https://example.com/RESOURCE_URL",
+  "collection_category": "Art",
+  "project_url": "https://www.cryptokitties.co/",
+  "wiki_url": "https://en.wikipedia.org/wiki/CryptoKitties",
+  "discord_url": "https://discord.com/invite/cryptokitties",
+  "telegram_url": "https://t.me/cryptokitties",
+  "twitter_username": "CryptoKitties",
+  "instagram_username": "cryptokitties",
+  "floor_price": "12345",
+  "floor_price_usd": "12345.4899",
+  "floor_price_currency": "eth",
+  "last_sale": {
+    "transaction_hash": "YOUR_TX_HASH",
+    "block_timestamp": "2023-04-04T15:59:11.000Z",
+    "buyer_address": "YOUR_ADDRESS",
+    "seller_address": "YOUR_ADDRESS",
+    "price": "7300000000000000",
+    "price_formatted": "0.0073",
+    "usd_price_at_sale": "13.61",
+    "current_usd_value": "15.53",
+    "token_address": "YOUR_TOKEN_ADDRESS",
+    "token_id": "170",
+    "payment_token": {
+      "token_name": "Ether",
+      "token_symbol": "ETH",
+      "token_logo": "https://cdn.moralis.io/eth/0x.png",
+      "token_decimals": "18",
+      "token_address": "YOUR_TOKEN_ADDRESS"
+    }
+  }
+}
+```
+
+## Example (curl)
+
+```bash
+curl -X GET "https://deep-index.moralis.io/api/v2.2/nft/YOUR_ADDRESS/metadata?chain=eth" \
+  -H "accept: application/json" \
+  -H "X-API-Key: $MORALIS_API_KEY"
+```

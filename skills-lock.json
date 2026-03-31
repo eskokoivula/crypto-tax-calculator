@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "learn-moralis": {
+      "source": "MoralisWeb3/onchain-skills",
+      "sourceType": "github",
+      "computedHash": "231cd9d86aa90198fa0e22b803a63666ede9295611d927caad81001def0f577f"
+    },
+    "moralis-data-api": {
+      "source": "MoralisWeb3/onchain-skills",
+      "sourceType": "github",
+      "computedHash": "69a71e4f0a962c5565c4b5eee880c82723e21474aead09d8e54b8b5581455426"
+    },
+    "moralis-streams-api": {
+      "source": "MoralisWeb3/onchain-skills",
+      "sourceType": "github",
+      "computedHash": "12519f3adcd1598073803a3a800703cb4db450efa49f9b95b6eba570dbd43ca0"
+    }
+  }
+}
