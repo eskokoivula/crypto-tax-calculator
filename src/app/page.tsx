@@ -1,101 +1,169 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useEffect, useMemo, useRef } from "react";
+import { WalletIcon, ScanSearchIcon } from "lucide-react";
+import { useWalletStore } from "@/store/wallet-store";
+import { useTransactionStore } from "@/store/transaction-store";
+import { useNotificationStore } from "@/store/notification-store";
+import { usePipeline } from "@/hooks/use-pipeline";
+import { OnboardingWizard } from "@/components/wallet/onboarding-wizard";
+import { PipelineStatus } from "@/components/pipeline/pipeline-status";
+import { SummaryCards } from "@/components/dashboard/summary-cards";
+import { TaxEstimateCard } from "@/components/dashboard/tax-estimate-card";
+import { ChainChart } from "@/components/dashboard/chain-chart";
+import { WalletChart } from "@/components/dashboard/wallet-chart";
+import { IssuesCard } from "@/components/dashboard/issues-card";
+import { Button } from "@/components/ui/button";
+
+export default function DashboardPage() {
+  const { wallets, taxYear } = useWalletStore();
+  const { transactions, loading, getTaxSummary, getFilteredTransactions } =
+    useTransactionStore();
+  const { getActiveWarnings } = useNotificationStore();
+  const { run, abort } = usePipeline();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Track previous wallet/year state for auto-run debounce
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prevKeyRef = useRef<string>("");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && wallets.length === 0) {
+      setShowOnboarding(true);
+    }
+  }, [mounted, wallets.length]);
+
+  // Auto-run pipeline when wallets or tax year change (debounced)
+  useEffect(() => {
+    if (!mounted) return;
+
+    const enabledWallets = wallets.filter((w) => w.enabled);
+    if (enabledWallets.length === 0) return;
+
+    const key = enabledWallets.map((w) => w.address).sort().join(",") + ":" + taxYear;
+    if (key === prevKeyRef.current) return;
+    prevKeyRef.current = key;
+
+    // Skip auto-run on first mount if we already have transactions
+    if (transactions.length > 0 && !debounceRef.current) return;
+
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    debounceRef.current = setTimeout(() => {
+      debounceRef.current = null;
+      if (!loading) {
+        run();
+      }
+    }, 1500);
+
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
+    };
+  }, [mounted, wallets, taxYear, loading, run, transactions.length]);
+
+  const summary = useMemo(() => getTaxSummary(), [transactions]);
+  const filtered = useMemo(() => getFilteredTransactions(), [transactions]);
+
+  const activeWarnings = useMemo(() => getActiveWarnings(), [transactions]);
+  const errorCount = useMemo(
+    () => activeWarnings.filter((w) => w.severity === "error").length,
+    [activeWarnings]
+  );
+  const warningCount = useMemo(
+    () => activeWarnings.filter((w) => w.severity === "warning").length,
+    [activeWarnings]
+  );
+
+  if (!mounted) return null;
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+            <p className="text-sm text-muted-foreground">
+              Overview of your crypto tax position
+            </p>
+          </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          {wallets.filter((w) => w.enabled).length > 0 && (
+            <Button
+              onClick={run}
+              disabled={loading}
+              variant="outline"
+              className="gap-2"
+            >
+              <ScanSearchIcon className="size-4" />
+              {loading ? "Scanning..." : "Scan Wallets"}
+            </Button>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        {/* Pipeline progress */}
+        {loading && <PipelineStatus onAbort={abort} />}
+
+        {wallets.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-border/50 bg-card/50 py-24">
+            <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10">
+              <WalletIcon className="size-7 text-primary" />
+            </div>
+            <div className="text-center">
+              <p className="font-medium text-foreground">No wallets added yet</p>
+              <p className="text-sm text-muted-foreground">
+                Add a wallet in the sidebar or use the setup wizard to get started.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowOnboarding(true)}
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Launch setup wizard
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* Summary metric cards */}
+            <SummaryCards summary={summary} />
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              {/* Tax estimate */}
+              <TaxEstimateCard summary={summary} />
+
+              {/* Issues */}
+              <div className="space-y-6">
+                <IssuesCard
+                  issueCount={summary.issueCount}
+                  errorCount={errorCount}
+                  warningCount={warningCount}
+                />
+                {/* Wallet chart */}
+                <WalletChart wallets={wallets} transactions={filtered} />
+              </div>
+            </div>
+
+            {/* Chain chart */}
+            <ChainChart transactions={filtered} />
+          </>
+        )}
+      </div>
+
+      {showOnboarding && (
+        <OnboardingWizard
+          onComplete={() => setShowOnboarding(false)}
+          onDismiss={() => setShowOnboarding(false)}
+        />
+      )}
+    </>
   );
 }

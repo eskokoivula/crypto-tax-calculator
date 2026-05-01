@@ -17,7 +17,28 @@
       "Bash(mkdir -p /Users/macesko/Desktop/moralis-tax-dapp/public)",
       "Bash(npm install:*)",
       "Bash(npx shadcn@latest init -d --style default --base-color slate)",
-      "Bash(npx shadcn@latest init -d)"
+      "Bash(npx shadcn@latest init -d)",
+      "Bash(npx shadcn@latest add card badge dialog dropdown-menu toast sheet table tabs scroll-area separator input label switch select popover command textarea tooltip avatar progress skeleton)",
+      "Bash(npx shadcn@latest add card badge dialog dropdown-menu sheet table tabs scroll-area separator input label switch select popover command textarea tooltip avatar progress skeleton sonner)",
+      "Bash(npx tsc:*)",
+      "Bash(npx next:*)",
+      "Bash(npm ls:*)",
+      "Bash(printf:*)",
+      "Bash(curl:*)",
+      "Bash(lsof -ti:3000,3001)",
+      "Bash(xargs kill:*)",
+      "Bash(lsof -ti:3000)",
+      "Bash(source /Users/macesko/Desktop/moralis-tax-dapp/.env)",
+      "Bash(grep:*)",
+      "Bash(source /Users/macesko/Desktop/moralis-tax-dapp/.env curl -s \"https://deep-index.moralis.io/api/v2.2/wallets/0x18e6c263ecd40ad31d9079b20730f04a59dd73b0/tokens?chain=0x1&exclude_spam=true\" -H \"X-API-Key: $MORALIS_API_KEY\" -H \"accept: application/json\")",
+      "Bash(source /Users/macesko/Desktop/moralis-tax-dapp/.env curl -s \"https://solana-gateway.moralis.io/account/mainnet/test123456789012345678901234567890123/portfolio\" -H \"X-API-Key: $MORALIS_API_KEY\" -H \"accept: application/json\")",
+      "Bash(source /Users/macesko/Desktop/moralis-tax-dapp/.env curl -s \"https://solana-gateway.moralis.io/account/mainnet/7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU/portfolio\" -H \"X-API-Key: $MORALIS_API_KEY\" -H \"accept: application/json\")",
+      "Bash(source /Users/macesko/Desktop/moralis-tax-dapp/.env curl -s \"https://solana-gateway.moralis.io/account/mainnet/7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU/swaps?transactionTypes=buy,sell&limit=3\" -H \"X-API-Key: $MORALIS_API_KEY\" -H \"accept: application/json\")",
+      "Bash(1 __NEW_LINE_57d6c4d972d73cc6__ echo \"=== T2: History ===\")",
+      "Bash(1 __NEW_LINE_57d6c4d972d73cc6__ echo \"=== T3: Balances ===\")",
+      "Bash(1 __NEW_LINE_57d6c4d972d73cc6__ echo \"=== T4: EUR rates ===\")",
+      "Bash(1 __NEW_LINE_57d6c4d972d73cc6__ echo \"=== T5: Prices ===\")",
+      "Bash(source /Users/macesko/Desktop/moralis-tax-dapp/.env curl -s \"https://deep-index.moralis.io/api/v2.2/wallets/0x18e6c263ecd40ad31d9079b20730f04a59dd73b0/chains\" -H \"X-API-Key: $MORALIS_API_KEY\" -H \"accept: application/json\")"
     ]
   }
 }
